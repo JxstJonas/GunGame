@@ -1,0 +1,9 @@
+name: GunGame
+version: ${project.version}
+main: net.vergessxner.gungame.GunGame
+api-version: 1.16
+authors: [ Jonas ]
+
+
+commands:
+  setup:
