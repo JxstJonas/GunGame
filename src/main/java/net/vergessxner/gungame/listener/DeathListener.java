@@ -2,6 +2,7 @@ package net.vergessxner.gungame.listener;
 
 import net.vergessxner.gungame.GunGame;
 import net.vergessxner.gungame.utils.GunGamePlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,6 +11,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,17 +26,22 @@ public class DeathListener implements Listener {
 
     private static HashMap<Player, Player> lastHit = new HashMap<>();
 
+    // TODO: 11.12.2020 LAST HIT
+
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         if(player.getLocation().getBlock().isLiquid()) {
             if(GunGame.getINSTANCE().getLoader().getConfig().getSpawn() != null)
                 player.teleport(GunGame.getINSTANCE().getLoader().getConfig().getSpawn().toLocation());
-            player.setVelocity(player.getVelocity().zero());
+            Bukkit.getScheduler().runTaskLater(GunGame.getINSTANCE(), () -> player.setVelocity(new Vector()), 1);
+
+            player.setHealth(20);
+            player.setFoodLevel(20);
 
             if(lastHit.containsKey(player)) {
-                player.sendMessage(GunGame.PREFIX + "§cDu wurdest von §6" + lastHit.get(player).getName() + "§cgetötet!");
-                lastHit.get(player).sendMessage(GunGame.PREFIX + "§aDu hast §6" + player.getName() + "§agetötet!");
+                player.sendMessage(GunGame.PREFIX + "§cDu wurdest von §7" + lastHit.get(player).getDisplayName() + " §cgetötet!");
+                lastHit.get(player).sendMessage(GunGame.PREFIX + "§aDu hast §7" + player.getDisplayName() + " §agetötet!");
                 lastHit.remove(player);
 
                 GunGamePlayer gunGameTarget = GunGame.getINSTANCE().getDataBase().getStatsProvider().getPlayer(lastHit.get(player).getUniqueId());
@@ -65,15 +72,25 @@ public class DeathListener implements Listener {
             Player player = (Player) event.getEntity();
             Player target = (Player) event.getDamager();
 
+            GunGamePlayer gunGamePlayer = GunGame.getINSTANCE().getDataBase().getStatsProvider().getPlayer(player.getUniqueId());
+            GunGamePlayer gunGameTarget = GunGame.getINSTANCE().getDataBase().getStatsProvider().getPlayer(target.getUniqueId());
+
+            if(gunGamePlayer.getGunGameTeam() == gunGameTarget.getGunGameTeam()) {
+                event.setCancelled(true);
+                return;
+            }
+
+            lastHit.put(player, target);
+
             if((player.getHealth() - event.getDamage()) <= 0) {
                 event.setDamage(0);
 
                 if (GunGame.getINSTANCE().getLoader().getConfig().getSpawn() != null)
                     player.teleport(GunGame.getINSTANCE().getLoader().getConfig().getSpawn().toLocation());
-                player.setVelocity(player.getVelocity().zero());
+                Bukkit.getScheduler().runTaskLater(GunGame.getINSTANCE(), () -> player.setVelocity(new Vector()), 1);
 
-                player.sendMessage(GunGame.PREFIX + "§cDu wurdest von §6" + target.getName() + "§cgetötet!");
-                target.sendMessage(GunGame.PREFIX + "§aDu hast §6" + player.getName() + "§agetötet!");
+                player.sendMessage(GunGame.PREFIX + "§cDu wurdest von §7" + target.getName() + " §cgetötet!");
+                target.sendMessage(GunGame.PREFIX + "§aDu hast §7" + player.getName() + " §agetötet!");
 
                 for (Map.Entry<Player, Player> playerPlayerEntry : lastHit.entrySet()) {
                     if(playerPlayerEntry.getValue() == player) {
@@ -82,12 +99,10 @@ public class DeathListener implements Listener {
                 }
 
 
-                GunGamePlayer gunGamePlayer = GunGame.getINSTANCE().getDataBase().getStatsProvider().getPlayer(player.getUniqueId());
-                GunGamePlayer gunGameTarget = GunGame.getINSTANCE().getDataBase().getStatsProvider().getPlayer(target.getUniqueId());
-
                 gunGamePlayer.setDeaths(gunGamePlayer.getDeaths() + 1);
                 gunGameTarget.setKills(gunGameTarget.getKills() + 1);
 
+                player.setHealth(20);
                 target.setHealth(20);
                 target.playSound(player.getLocation(), Sound.LEVEL_UP, 8, 8);
 

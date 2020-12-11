@@ -11,8 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.UUID;
-
 /**
  * @author Jonas
  * Created: 10.12.2020
@@ -25,13 +23,8 @@ public class JoinQuitListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         event.setJoinMessage(null);
+
         Player player = event.getPlayer();
-
-
-        System.out.println(GunGame.getINSTANCE() == null);
-        System.out.println(GunGame.getINSTANCE().getLoader() == null);
-        System.out.println(GunGame.getINSTANCE().getLoader().getConfig() == null);
-        System.out.println(GunGame.getINSTANCE().getLoader().getConfig().getSpawn() == null);
 
         if(GunGame.getINSTANCE().getLoader().getConfig().getSpawn() != null)
             player.teleport(GunGame.getINSTANCE().getLoader().getConfig().getSpawn().toLocation());
@@ -41,7 +34,7 @@ public class JoinQuitListener implements Listener {
         player.setHealth(20);
         player.setLevel(1);
 
-        player.getInventory().setItem(0, new ItemBuilder(Material.WOOD_AXE).setName("Level - 1").toItemStack());
+        player.getInventory().setItem(0, new ItemBuilder(Material.WOOD_AXE).setName("Level - 1").setUnbreakable(true).toItemStack());
 
         GunGamePlayer gunGamePlayer = null;
 
@@ -52,6 +45,8 @@ public class JoinQuitListener implements Listener {
             dataBase.getStatsProvider().updatePlayer(gunGamePlayer);
         } else
             gunGamePlayer = dataBase.getStatsProvider().getPlayer(player.getUniqueId());
+
+        GunGame.getINSTANCE().getGunGameScoreboard().setScoreboard(player);
     }
 
     @EventHandler
@@ -62,9 +57,10 @@ public class JoinQuitListener implements Listener {
         player.getInventory().clear();
 
         IDataBase dataBase = GunGame.getINSTANCE().getDataBase();
+        GunGamePlayer gunGamePlayer = dataBase.getStatsProvider().getPlayer(player.getUniqueId());
+
         dataBase.getStatsProvider().updatePlayer(dataBase.getStatsProvider().getPlayer(player.getUniqueId()));
         dataBase.getStatsProvider().unregisterPlayer(dataBase.getStatsProvider().getPlayer(player.getUniqueId()));
-
     }
 
 }

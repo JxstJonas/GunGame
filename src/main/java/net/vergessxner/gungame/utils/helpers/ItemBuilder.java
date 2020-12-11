@@ -279,6 +279,15 @@ public class ItemBuilder {
     }
 
     /**
+     * Add/Remove a unbreakable line.
+     */
+    public ItemBuilder setUnbreakable(boolean unbreakable) {
+        is.getItemMeta().spigot().setUnbreakable(unbreakable);
+        return this;
+    }
+
+
+    /**
      * Retrieves the itemstack from the ItemBuilder.
      *
      * @return The itemstack created/modified by the ItemBuilder instance.

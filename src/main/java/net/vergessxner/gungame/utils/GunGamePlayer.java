@@ -16,8 +16,28 @@ public class GunGamePlayer {
     private int deaths = 0;
     private int maxLevel = 0;
 
+    private int killStreak = 0;
+
+    private GunGameTeam gunGameTeam;
+
+    public int getKillStreak() {
+        return killStreak;
+    }
+
+    public GunGameTeam getGunGameTeam() {
+        return gunGameTeam;
+    }
+
+    public void setGunGameTeam(GunGameTeam gunGameTeam) {
+        this.gunGameTeam = gunGameTeam;
+    }
+
+    public void setKillStreak(int killStreak) {
+        this.killStreak = killStreak;
+    }
+
     public double getKD() {
-        return (double) Math.round((double)44 / 68 * 100) / 100;
+        return (double) Math.round((double)kills / deaths * 100) / 100;
     }
 
     public int getKills() {

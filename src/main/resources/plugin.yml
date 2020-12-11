@@ -7,3 +7,5 @@ authors: [ Jonas ]
 
 commands:
   setup:
+  stats:
+  team:

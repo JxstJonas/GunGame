@@ -30,11 +30,13 @@ public class MongoStatsProvider implements IStatsProvider {
 
     @Override
     public void updatePlayer(GunGamePlayer gunGamePlayer) {
+        gunGamePlayer.setGunGameTeam(null);
+
         String json = GSON.toJson(gunGamePlayer);
 
         if(isExist(gunGamePlayer.getUuid())) {
-            Document document = collection.find(Filters.eq("uuid", gunGamePlayer.getUuid().toString())).first();
-            collection.updateOne(document, new Document("$set", Document.parse(json)));
+            Document found = collection.find(Filters.eq("uuid", gunGamePlayer.getUuid().toString())).first();
+            collection.updateOne(found, new Document("$set", Document.parse(json)));
             return;
         }
 
@@ -59,9 +61,10 @@ public class MongoStatsProvider implements IStatsProvider {
         if(document == null) {
             gunGamePlayer = new GunGamePlayer();
             gunGamePlayer.setUuid(uuid);
-            return gunGamePlayer;
-        }
-        gunGamePlayer = GSON.fromJson(document.toJson(), GunGamePlayer.class);
+        }else
+            gunGamePlayer = GSON.fromJson(document.toJson(), GunGamePlayer.class);
+
+        map.put(uuid, gunGamePlayer);
         return gunGamePlayer;
     }
 
