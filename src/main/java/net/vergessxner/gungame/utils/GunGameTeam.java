@@ -50,7 +50,7 @@ public class GunGameTeam {
         gunGamePlayer.setGunGameTeam(null);
 
         if(playerList.size() == 1) deleteTeam(owner);
-        owner.sendMessage("§cDas Team wurde gelöscht!");
+        owner.sendMessage(GunGame.PREFIX + "§cDas Team wurde gelöscht!");
     }
 
     public void inviteTeam(Player player) {

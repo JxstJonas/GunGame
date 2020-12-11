@@ -14,7 +14,7 @@ public class GunGamePlayer {
 
     private int kills = 0;
     private int deaths = 0;
-    private int maxLevel = 0;
+    private int maxLevel = 1;
 
     private int killStreak = 0;
 
