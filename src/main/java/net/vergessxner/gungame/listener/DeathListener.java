@@ -28,7 +28,6 @@ public class DeathListener implements Listener {
     private static HashMap<Player, Player> lastHit = new HashMap<>();
     private static HashMap<Player, Integer> kills = new HashMap<>();
 
-    // TODO: 11.12.2020 LAST HIT
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {

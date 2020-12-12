@@ -7,6 +7,7 @@ import com.mongodb.client.MongoDatabase;
 import net.vergessxner.gungame.database.IDataBase;
 import net.vergessxner.gungame.database.IStatsProvider;
 import org.bson.Document;
+import org.bukkit.Bukkit;
 
 /**
  * @author Jonas
@@ -39,6 +40,7 @@ public class MongoDataBase implements IDataBase {
         collection = database.getCollection("stats");
 
         statsProvider = new MongoStatsProvider(collection);
+        Bukkit.getConsoleSender().sendMessage("§aMongoDB connected!");
     }
 
     @Override

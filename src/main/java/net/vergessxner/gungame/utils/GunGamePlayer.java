@@ -37,6 +37,7 @@ public class GunGamePlayer {
     }
 
     public double getKD() {
+        if(deaths == 0) return (double) kills;
         return (double) Math.round((double)kills / deaths * 100) / 100;
     }
 

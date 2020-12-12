@@ -30,7 +30,7 @@ public class GunGameScoreboard {
                     IChatBaseComponent chatBaseComponent = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + "§aTeams erlaubt "+ "\"}");
                     playerConnection.sendPacket(new PacketPlayOutChat(chatBaseComponent, (byte) 2));
                 }
-            }, 20, 0);
+            }, 0, 20);
         }
     }
 

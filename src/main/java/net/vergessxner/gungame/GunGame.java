@@ -5,6 +5,7 @@ import net.vergessxner.gungame.command.StatsCommand;
 import net.vergessxner.gungame.command.TeamCommand;
 import net.vergessxner.gungame.database.IDataBase;
 import net.vergessxner.gungame.database.mongo.MongoDataBase;
+import net.vergessxner.gungame.database.mysql.MySQLDataBase;
 import net.vergessxner.gungame.listener.DeathListener;
 import net.vergessxner.gungame.listener.GameListener;
 import net.vergessxner.gungame.listener.JoinQuitListener;
@@ -12,6 +13,7 @@ import net.vergessxner.gungame.utils.GunGameScoreboard;
 import net.vergessxner.gungame.utils.file.ConfigLoader;
 import net.vergessxner.gungame.utils.file.Locations;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -31,7 +33,30 @@ public final class GunGame extends JavaPlugin {
     public void onLoad() {
         INSTANCE = this;
 
-        dataBase = new MongoDataBase(null);
+
+        getConfig().options().copyDefaults(true);
+        saveDefaultConfig();
+
+        //Database connection
+        String databaseType = getConfig().getString("database");
+        if(databaseType.equalsIgnoreCase("mysql")) {
+            //MySQL
+            String host = getConfig().getString("mysqlHost");
+            String username = getConfig().getString("mysqlUsername");
+            String password = getConfig().getString("mysqlPassword");
+            String database = getConfig().getString("mysqlDatabase");
+            int port = getConfig().getInt("mysqlPort");
+
+            dataBase = new MySQLDataBase(host, username, password, database, port);
+        }else {
+            //MongoDB
+            String connectionString = getConfig().getString("connectionString");
+            if(connectionString == null || connectionString.isEmpty())
+                dataBase = new MongoDataBase(null);
+             else
+                dataBase = new MongoDataBase(connectionString);
+        }
+
         dataBase.connect();
         getLogger().info("DataBase connected");
 
@@ -69,7 +94,11 @@ public final class GunGame extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            dataBase.getStatsProvider().updatePlayer(dataBase.getStatsProvider().getPlayer(onlinePlayer.getUniqueId()));
+        }
 
+        if(dataBase.isConnected()) dataBase.disconnect();
     }
 
     public IDataBase getDataBase() {

@@ -1,0 +1,14 @@
+# GunGame
+
+# Database Supported MongoDB and MySQL
+database: 'mysql'
+
+# MySQL
+mysqlHost: 'localhost'
+mysqlUsername: 'root'
+mysqlDatabase: 'root'
+mysqlPassword: ''
+mysqlPort: 3306
+
+# MongoDB
+connectionString: ''
