@@ -20,6 +20,7 @@ import org.bukkit.event.weather.WeatherChangeEvent;
 
 public class GameListener implements Listener {
 
+
     @EventHandler
     public void onWeatherChange(WeatherChangeEvent event) {
         event.setCancelled(true);
@@ -59,7 +60,5 @@ public class GameListener implements Listener {
     public void onMobSpawnEvent(CreatureSpawnEvent event) {
         event.setCancelled(true);
     }
-
-
 
 }

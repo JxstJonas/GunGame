@@ -3,7 +3,9 @@ package net.vergessxner.gungame.listener;
 import net.vergessxner.gungame.GunGame;
 import net.vergessxner.gungame.utils.GunGamePlayer;
 import net.vergessxner.gungame.utils.GunGameUpgrade;
+import net.vergessxner.gungame.utils.file.Locations;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -48,6 +50,8 @@ public class DeathListener implements Listener {
                 gunGameTarget.setKills(gunGameTarget.getKills() + 1);
 
                 GunGameUpgrade.levelUp(lastHit.get(player));
+                lastHit.get(player).setHealth(lastHit.get(player).getMaxHealth());
+
                 lastHit.remove(player);
             } else {
                 player.sendMessage(GunGame.PREFIX + "§cDu bist gestorben!");
@@ -61,8 +65,8 @@ public class DeathListener implements Listener {
                 kills.remove(player);
                 GunGameUpgrade.levelDown(player);
 
-                player.setHealth(player.getMaxHealth());
             }
+            player.setHealth(player.getMaxHealth());
         }
     }
 
@@ -72,6 +76,11 @@ public class DeathListener implements Listener {
         if(event.getEntity() instanceof Player && event.getDamager() instanceof Player) {
             Player player = (Player) event.getEntity();
             Player target = (Player) event.getDamager();
+
+            if(isInProtection(player) || isInProtection(target)) {
+                event.setCancelled(true);
+                return;
+            }
 
             GunGamePlayer gunGamePlayer = GunGame.getINSTANCE().getDataBase().getStatsProvider().getPlayer(player.getUniqueId());
             GunGamePlayer gunGameTarget = GunGame.getINSTANCE().getDataBase().getStatsProvider().getPlayer(target.getUniqueId());
@@ -139,6 +148,21 @@ public class DeathListener implements Listener {
             }
 
         }
+    }
+
+
+    public boolean isInProtection(Player player) {
+        Location loc = player.getLocation();
+        GunGame.getINSTANCE().getLoader().load();
+        Locations locations = GunGame.getINSTANCE().getLoader().getConfig();
+        if(locations == null || locations.getPos1() == null || locations.getPos2() == null) return false;
+
+
+        if(loc.getBlockX() < locations.getPos1().getX() || loc.getBlockX() > locations.getPos2().getX()) return false;
+        if (loc.getBlockZ() < locations.getPos1().getZ() || loc.getBlockZ() > locations.getPos2().getZ()) return false;
+        if (loc.getBlockY() < locations.getPos1().getY() || loc.getBlockY() > locations.getPos2().getY()) return false;
+
+        return true;
     }
 
 }

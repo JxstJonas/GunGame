@@ -20,9 +20,6 @@ public class GunGameTeam {
     private ArrayList<Player> playerList = new ArrayList<>();
     private ArrayList<Player> invites = new ArrayList<>();
 
-
-    // TODO: 12.12.2020 if Team Owner leave delete Team
-    
     //All Teams
     private static HashMap<String, GunGameTeam> gunGameTeamMap = new HashMap<>();
 

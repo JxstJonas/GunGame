@@ -9,7 +9,6 @@ import net.vergessxner.gungame.database.mysql.MySQLDataBase;
 import net.vergessxner.gungame.listener.DeathListener;
 import net.vergessxner.gungame.listener.GameListener;
 import net.vergessxner.gungame.listener.JoinQuitListener;
-import net.vergessxner.gungame.listener.ProtectionListener;
 import net.vergessxner.gungame.utils.GunGameScoreboard;
 import net.vergessxner.gungame.utils.file.ConfigLoader;
 import net.vergessxner.gungame.utils.file.Locations;
@@ -89,7 +88,6 @@ public final class GunGame extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new DeathListener(), this);
         Bukkit.getPluginManager().registerEvents(new JoinQuitListener(), this);
         Bukkit.getPluginManager().registerEvents(new GameListener(), this);
-        Bukkit.getPluginManager().registerEvents(new ProtectionListener(), this);
 
         gunGameScoreboard = new GunGameScoreboard();
     }
