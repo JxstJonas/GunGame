@@ -51,6 +51,8 @@ public class DeathListener implements Listener {
 
                 GunGameUpgrade.levelUp(lastHit.get(player));
                 lastHit.get(player).setHealth(lastHit.get(player).getMaxHealth());
+                lastHit.get(player).playSound(player.getLocation(), Sound.LEVEL_UP, 8, 8);
+
 
                 lastHit.remove(player);
             } else {
@@ -67,6 +69,9 @@ public class DeathListener implements Listener {
 
             }
             player.setHealth(player.getMaxHealth());
+            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1));
+            player.playSound(player.getLocation(), Sound.IRONGOLEM_HIT, 8, 8);
+
         }
     }
 
@@ -108,10 +113,10 @@ public class DeathListener implements Listener {
                 gunGamePlayer.setDeaths(gunGamePlayer.getDeaths() + 1);
                 gunGameTarget.setKills(gunGameTarget.getKills() + 1);
 
-                target.playSound(player.getLocation(), Sound.LEVEL_UP, 8, 8);
 
                 player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1));
                 player.playSound(player.getLocation(), Sound.IRONGOLEM_HIT, 8, 8);
+                target.playSound(player.getLocation(), Sound.LEVEL_UP, 8, 8);
 
                 //Killstreak
                 if(!kills.containsKey(target)) {

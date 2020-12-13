@@ -34,6 +34,7 @@ public class GunGameUpgrade {
     public static void levelDown(Player player) {
         if(levelMap.containsKey(player)) {
             int previousLevel = levelMap.get(player);
+            if(previousLevel == 1) return;
             levelMap.put(player, previousLevel - 1);
             player.setLevel(levelMap.get(player));
         }else player.setLevel(1);
