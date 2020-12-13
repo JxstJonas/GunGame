@@ -31,6 +31,12 @@ public class TeamCommand implements CommandExecutor {
                 player.sendMessage(GunGame.PREFIX + "§cDer Spieler wurde nicht gefunden!");
                 return false;
             }
+
+            if(player == target) {
+                player.sendMessage(GunGame.PREFIX + "§cDu kannst nicht mit dir selbst interagieren!");
+                return false;
+            }
+
             GunGamePlayer gunGameTarget = GunGame.getINSTANCE().getDataBase().getStatsProvider().getPlayer(target.getUniqueId());
 
             //Commands
@@ -40,13 +46,14 @@ public class TeamCommand implements CommandExecutor {
                     GunGameTeam.createTeam(player);
                     gunGamePlayer.getGunGameTeam().inviteTeam(target);
                     target.sendMessage(GunGame.PREFIX + "§aDu wurdest von §7" + player.getDisplayName() + "§a in ein Team eingeladen!");
-
+                    player.sendMessage(GunGame.PREFIX + "§aDu hast §7" + target.getDisplayName() + "§a in dein Team eingeladen");
                 } else if (gunGamePlayer.getGunGameTeam().getOwner() == player) {
                     //Invite in Existing Team
                     gunGamePlayer.getGunGameTeam().inviteTeam(target);
                     target.sendMessage(GunGame.PREFIX + "§aDu wurdest von §7" + player.getDisplayName() + "§a in ein Team eingeladen!");
-
+                    player.sendMessage(GunGame.PREFIX + "§aDu hast §7" + target.getDisplayName() + "§a in dein Team eingeladen");
                 } else player.sendMessage(GunGame.PREFIX + "§cDu bist nicht der Team-Owner");
+
             } else if (args[0].equalsIgnoreCase("accept")) {
                 //Accept Team
                 if (gunGamePlayer.getGunGameTeam() != null) {
@@ -61,14 +68,26 @@ public class TeamCommand implements CommandExecutor {
                     }
 
                 } else player.sendMessage(GunGame.PREFIX + "§cDu wurdest nicht von §7" + args[1] + " §ceingeladen!");
-            } else if (args[0].equalsIgnoreCase("kick") && gunGamePlayer.getGunGameTeam() != null && gunGamePlayer.getGunGameTeam().getOwner() == player) {
+            } else if (args[0].equalsIgnoreCase("kick") && gunGamePlayer.getGunGameTeam() != null) {
                 //Kick Team
+
+                if(gunGamePlayer.getGunGameTeam().getOwner() != player) {
+                    player.sendMessage(GunGame.PREFIX + "§cDu hast nicht die Berechtigung für diesen Command");
+                }
+
                 if (gunGamePlayer.getGunGameTeam() == gunGameTarget.getGunGameTeam()) {
                     for (Player teamMate : gunGameTarget.getGunGameTeam().getPlayerList()) {
                         teamMate.sendMessage(GunGame.PREFIX + "§7" + player.getDisplayName() + "§a hat das Team verlassen!");
                     }
                     gunGamePlayer.getGunGameTeam().removeTeam(target);
                 }
+            } else {
+                player.sendMessage(GunGame.PREFIX + "§aFolgende Befehle stehen zur Verfügung: ");
+                player.sendMessage(GunGame.PREFIX + "§8- §7/team invite - Lade einen Spieler ein");
+                player.sendMessage(GunGame.PREFIX + "§8- §7/team info - Zeigt dir eine Übersicht an Befehlen");
+                player.sendMessage(GunGame.PREFIX + "§8- §7/team accept - Akzeptiere die Einladung eines Spielers");
+                player.sendMessage(GunGame.PREFIX + "§8- §7/team kick - Entfernt einen Spieler aus deinem Team");
+                player.sendMessage(GunGame.PREFIX + "§8- §7/team leave - Verlässt dein aktuelles Team");
             }
         } else if (args.length == 1) {
             if (args[0].equalsIgnoreCase("leave")) {

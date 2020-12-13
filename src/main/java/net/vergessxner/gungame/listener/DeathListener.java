@@ -15,6 +15,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -32,14 +33,14 @@ public class DeathListener implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        if(player.getLocation().getBlock().isLiquid()) {
-            if(GunGame.getINSTANCE().getLoader().getConfig().getSpawn() != null)
+        if (player.getLocation().getBlock().isLiquid()) {
+            if (GunGame.getINSTANCE().getLoader().getConfig().getSpawn() != null)
                 player.teleport(GunGame.getINSTANCE().getLoader().getConfig().getSpawn().toLocation());
+
             Bukkit.getScheduler().runTaskLater(GunGame.getINSTANCE(), () -> player.setVelocity(new Vector()), 1);
 
 
-
-            if(lastHit.containsKey(player)) {
+            if (lastHit.containsKey(player)) {
                 player.sendMessage(GunGame.PREFIX + "§cDu wurdest von §7" + lastHit.get(player).getDisplayName() + " §cgetötet!");
                 lastHit.get(player).sendMessage(GunGame.PREFIX + "§aDu hast §7" + player.getDisplayName() + " §agetötet!");
 
@@ -51,23 +52,17 @@ public class DeathListener implements Listener {
             } else {
                 player.sendMessage(GunGame.PREFIX + "§cDu bist gestorben!");
 
-                if(lastHit.containsValue(player)) {
+                //Removes all last hits he made on other players
+                removeLastHit(player);
 
-                    for (Map.Entry<Player, Player> playerPlayerEntry : lastHit.entrySet()) {
-                        if(playerPlayerEntry.getValue() == player) {
-                            lastHit.remove(playerPlayerEntry.getKey());
-                        }
-                    }
-                }
+                GunGamePlayer gunGamePlayer = GunGame.getINSTANCE().getDataBase().getStatsProvider().getPlayer(player.getUniqueId());
+                gunGamePlayer.setDeaths(gunGamePlayer.getDeaths() + 1);
+
+                kills.remove(player);
+                GunGameUpgrade.levelDown(player);
+
+                player.setHealth(player.getMaxHealth());
             }
-
-            GunGamePlayer gunGamePlayer = GunGame.getINSTANCE().getDataBase().getStatsProvider().getPlayer(player.getUniqueId());
-            gunGamePlayer.setDeaths(gunGamePlayer.getDeaths() + 1);
-
-            kills.remove(player);
-            GunGameUpgrade.levelDown(player);
-
-            player.setHealth(player.getMaxHealth());
         }
     }
 
@@ -98,14 +93,8 @@ public class DeathListener implements Listener {
                 player.sendMessage(GunGame.PREFIX + "§cDu wurdest von §7" + target.getName() + " §cgetötet!");
                 target.sendMessage(GunGame.PREFIX + "§aDu hast §7" + player.getName() + " §agetötet!");
 
-                if(!lastHit.isEmpty()) {
-                    for (Map.Entry<Player, Player> playerPlayerEntry : lastHit.entrySet()) {
-                        if (playerPlayerEntry.getValue() == player) {
-                            lastHit.remove(playerPlayerEntry.getKey());
-                        }
-                    }
-                }
-
+                //Removes all last hits he made on other player
+                removeLastHit(player);
 
                 gunGamePlayer.setDeaths(gunGamePlayer.getDeaths() + 1);
                 gunGameTarget.setKills(gunGameTarget.getKills() + 1);
@@ -135,6 +124,20 @@ public class DeathListener implements Listener {
                 player.setHealth(player.getMaxHealth());
                 target.setHealth(target.getMaxHealth());
             }
+        }
+    }
+
+
+    private void removeLastHit(Player player) {
+        if(!lastHit.isEmpty()) {
+            Iterator<Map.Entry<Player, Player>> it = lastHit.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<Player, Player> entry = it.next();
+                if(entry.getValue() == player) {
+                    it.remove();
+                }
+            }
+
         }
     }
 

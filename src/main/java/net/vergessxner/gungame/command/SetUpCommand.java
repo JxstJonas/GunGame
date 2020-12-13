@@ -27,8 +27,9 @@ public class SetUpCommand implements CommandExecutor {
 
         if(args.length != 1) {
             player.sendMessage(GunGame.PREFIX + "§7Verwende: ");
-            player.sendMessage(" ");
             player.sendMessage(GunGame.PREFIX + "§a/setup spawn");
+            player.sendMessage(GunGame.PREFIX + "§a/setup pos1");
+            player.sendMessage(GunGame.PREFIX + "§a/setup pos2");
             return false;
         }
 
@@ -39,6 +40,27 @@ public class SetUpCommand implements CommandExecutor {
             GunGame.getINSTANCE().getLoader().set(locations);
 
             player.sendMessage(GunGame.PREFIX + "§7Du hast den Spawn §agesetzt§7!");
+        } else if(args[0].equalsIgnoreCase("pos1")){
+            //Pos1
+
+            Locations locations = GunGame.getINSTANCE().getLoader().getConfig();
+            locations.setPos1(player.getLocation());
+            GunGame.getINSTANCE().getLoader().set(locations);
+
+            player.sendMessage(GunGame.PREFIX + "§7Du hast die 1. Position §agesetzt§7!");
+        } else if(args[0].equalsIgnoreCase("pos2")) {
+            //Pos2
+
+            Locations locations = GunGame.getINSTANCE().getLoader().getConfig();
+            locations.setPos2(player.getLocation());
+            GunGame.getINSTANCE().getLoader().set(locations);
+
+            player.sendMessage(GunGame.PREFIX + "§7Du hast die 2. Position §agesetzt§7!");
+        }else {
+            player.sendMessage(GunGame.PREFIX + "§7Verwende: ");
+            player.sendMessage(GunGame.PREFIX + "§a/setup spawn");
+            player.sendMessage(GunGame.PREFIX + "§a/setup pos1");
+            player.sendMessage(GunGame.PREFIX + "§a/setup pos2");
         }
 
         return false;

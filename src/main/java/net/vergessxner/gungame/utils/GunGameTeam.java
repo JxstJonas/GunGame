@@ -20,6 +20,9 @@ public class GunGameTeam {
     private ArrayList<Player> playerList = new ArrayList<>();
     private ArrayList<Player> invites = new ArrayList<>();
 
+
+    // TODO: 12.12.2020 if Team Owner leave delete Team
+    
     //All Teams
     private static HashMap<String, GunGameTeam> gunGameTeamMap = new HashMap<>();
 
@@ -49,8 +52,10 @@ public class GunGameTeam {
         GunGamePlayer gunGamePlayer = GunGame.getINSTANCE().getDataBase().getStatsProvider().getPlayer(player.getUniqueId());
         gunGamePlayer.setGunGameTeam(null);
 
-        if(playerList.size() == 1) deleteTeam(owner);
-        owner.sendMessage(GunGame.PREFIX + "§cDas Team wurde gelöscht!");
+        if(playerList.size() == 1) {
+            deleteTeam(owner);
+            owner.sendMessage(GunGame.PREFIX + "§cDas Team wurde gelöscht!");
+        }
     }
 
     public void inviteTeam(Player player) {
@@ -90,7 +95,7 @@ public class GunGameTeam {
                 player.getScoreboard().getTeam("team").removePlayer(teamMate);
             }
 
-            GunGamePlayer gunGamePlayer = GunGame.getINSTANCE().getDataBase().getStatsProvider().getPlayer(owner.getUniqueId());
+            GunGamePlayer gunGamePlayer = GunGame.getINSTANCE().getDataBase().getStatsProvider().getPlayer(player.getUniqueId());
             gunGamePlayer.setGunGameTeam(null);
         }
 
