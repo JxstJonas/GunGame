@@ -35,7 +35,7 @@ public class JoinQuitListener implements Listener {
         player.setHealth(20);
         player.setLevel(1);
 
-        player.getInventory().setItem(0, new ItemBuilder(Material.WOOD_AXE).setName("Level - 1").setUnbreakable(true).toItemStack());
+        player.getInventory().setItem(0, new ItemBuilder(Material.WOOD_AXE).setName("Level").setUnbreakable(true).toItemStack());
 
         GunGamePlayer gunGamePlayer = null;
 
