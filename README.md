@@ -1,6 +1,8 @@
 # GunGame
 Minecraft GunGame MiniGame/FFA. Spigot version 1.8.8. Database: MongoDB and MySQL
 
+[Spigot](https://www.spigotmc.org/resources/gungame-wie-auf-minesucht-1-8-x.91119/)
+
 ## Infos
 Used Java version for development is `1.8.0_261`.
 The tested version is Spigot 1.8.8.
